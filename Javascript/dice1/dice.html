@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>My Website</title>
+    <style>
+    
+      li{
+        line-height: 30px;
+      }
+
+      img{
+        height: 30px;
+        vertical-align: middle;
+      }
+    
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.1.2/handlebars.min.js" integrity="sha256-ngJY93C4H39YbmrWhnLzSyiepRuQDVKDNCWO2iyMzFw=" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+
+      console.log("Insde JS");
+      //Template for roll results
+      const template = Handlebars.compile("<li>You rolled <img src=\"img/{{ value }}.png\"></li>");
+
+      document.addEventListener('DOMContentLoaded', () => {
+        
+        console.log("Insede the event listener.")
+        document.querySelector('#roll').onclick = () => {
+
+          console.log("It rolls");
+          //Generate random rolls.
+          const roll = Math.floor((Math.random() * 6) +1);
+        
+          console.log(roll)
+          //Add roll results to DOM.
+          const content = template({'value':roll})
+          document.querySelector('#rolls').innerHTML += content;
+        };
+      });
+
+    </script>
+  </head>
+  <body>
+    <button id="roll" type="button" name="button">Roll</button>
+    <ul id="rolls">
+
+    </ul>
+  </body>
+</html>

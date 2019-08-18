@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>My Website</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.1.2/handlebars.min.js" integrity="sha256-ngJY93C4H39YbmrWhnLzSyiepRuQDVKDNCWO2iyMzFw=" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+      //Template for roll results
+      console.log('Inside the script tag.');
+      const template = Handlebars.compile("<li>You rolled a {{value}}</li>");
+
+      document.addEventListener('DOMContentLoaded', () => {
+        console.log('Loaded');
+        document.querySelector('#roll').onclick = () => {
+          console.log('Click');
+          //Generate random rolls.
+          const roll = Math.floor((Math.random() * 6) +1);
+          console.log(`The rolled value is ${roll}`);
+          //Add roll results to DOM.
+          const content = template({'value':roll})
+          document.querySelector('#rolls').innerHTML += content;
+        };
+      });
+
+    </script>
+  </head>
+  <body>
+    <button id="roll" type="button" name="button">Roll</button>
+    <ul id="rolls">
+
+    </ul>
+  </body>
+</html>

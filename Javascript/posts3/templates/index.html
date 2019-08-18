@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js"></script>
+    <title>My Website</title>
+    <style>
+
+        @keyframes hide {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+            }
+        }
+        
+        .post {
+                background-color: #77dd11;
+                padding: 20px;
+                margin-bottom: 10px;
+                animation-name: hide;
+                animation-duration: 2s;
+                animation-fill-mode: forwards;
+                animation-play-state: paused;
+
+        }
+
+        .hide {
+            float: right;
+        }
+
+        body {
+            padding-bottom: 50px;
+        }
+    
+    </style>
+
+    <script id="post" type="text/x-handlebars-template">
+        <div class=post>
+            {% raw -%}
+                {{ contents }}
+            {%- endraw %}
+            <button class="hide">Hide</button>
+        </div>
+    </script>
+
+    <script>
+
+        // Start with the first post.
+        let counter = 1;
+
+        // Load 20 posts at a time.
+        const quantity = 20;
+
+        // When DOM loads, load the first 20 posts.
+        document.addEventListener('DOMContentLoaded', load);
+
+        // If scrolled to the bottom load the next 20 posts.
+        window.onscroll = () => {
+            if(window.innerHeight + window.scrollY >= document.body.offsetHeight){
+                load();
+            }
+        };
+
+        // If hide button is clicked.
+        document.addEventListener('click', event => {
+            const element = event.target;
+            if(element.className === 'hide'){
+                element.parentElement.style.animationPlayState = 'running';
+                element.parentElement.addEventListener('animationend', ()=> {
+                    element.parentElement.remove();
+                });
+            }
+        });
+
+    // Load next set of posts.
+    function load(){
+
+        console.log('Loading');
+        // Start and end post numbers and update counter.
+        start = counter;
+        end = start + quantity - 1;
+        counter = end + 1;
+
+        // Open new request to get new posts.
+        const request = new XMLHttpRequest();
+        request.open('POST', '/posts');
+        request.onload = () => {
+            const data = JSON.parse(request.responseText);
+            console.log(data);
+            data.forEach(add_post);
+        }
+
+        // Add start and end points to request data.
+        const data = new FormData();
+        data.append('start', start);
+        data.append('end', end);
+
+        // Send data.
+        request.send(data);
+    };
+
+    // Add a new post with the given DOM content.
+    const post_template = Handlebars.compile(document.querySelector('#post').innerHTML);
+    function add_post(contents){
+
+        console.log("Adding....");
+        // Create new post.
+        const posts = post_template({'contents': contents});
+
+        // Add posts to DOM.
+        document.querySelector('#posts').innerHTML += posts;
+
+    };
+    </script>
+
+
+</head>
+<body>
+    <h1>Posts</h1>
+    <div id="posts">
+    </div>
+</body>
+</html>
